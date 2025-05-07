@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.15)
 
 project(test_hello_world)
 
+find_package(benchmark REQUIRED)
+
 set(source_files
   test_hello_world.cpp
 )

@@ -1,4 +1,5 @@
 #include <ecal/ecal.h>
+#include <benchmark/benchmark.h>
 
 #include <iostream>
 

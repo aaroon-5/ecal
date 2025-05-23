@@ -36,8 +36,18 @@
 #include <memory>
 #include <string>
 
+#include <map>
+#include <chrono>
+
 namespace eCAL
 {
+  ECAL_API_EXPORTED_MEMBER
+    extern std::map<std::string, long long> my_timestamps;
+  ECAL_API_EXPORTED_MEMBER
+    extern int my_idx;
+  ECAL_API_EXPORTED_MEMBER
+    long long get_timestamp_ns(void);
+
   class CPublisherImpl;
 
   /**

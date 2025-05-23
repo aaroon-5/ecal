@@ -28,6 +28,8 @@
 
 #include <string>
 
+#include <ecal/ecal.h>
+
 namespace eCAL
 {
   const std::string CDataWriterSHM::m_memfile_base_name = "ecal_";
@@ -72,9 +74,11 @@ namespace eCAL
 
   bool CDataWriterSHM::Write(CPayloadWriter& payload_, const SWriterAttr& attr_)
   {
+    my_timestamps.insert({"Entered CDataWriterSHM" + std::to_string(my_idx), get_timestamp_ns()});
     // write content
     const bool force_full_write(m_memory_file_vec.size() > 1);
     const bool sent = m_memory_file_vec[m_write_idx]->Write(payload_, attr_, force_full_write);
+    my_timestamps.insert({"Written content" + std::to_string(my_idx), get_timestamp_ns()});
 
     // and increment file index
     m_write_idx++;

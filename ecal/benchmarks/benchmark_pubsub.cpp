@@ -20,19 +20,70 @@
 #include <ecal/ecal.h>
 #include <ecal/pubsub/publisher.h>
 #include <ecal/pubsub/subscriber.h>
+#include <benchmark/benchmark.h>
 
 #include <iostream>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 
-#include <benchmark/benchmark.h>
-
 #define REGISTRATION_DELAY_MS   2000
 #define RANGE_MULTIPLIER        1<<6
 #define RANGE_START             1
 #define RANGE_LIMIT             1<<24
 #define WARMUP_TIME_S           2
+
+/*
+ * Timestamping
+*/
+// Simple callback function
+static void callback(void) {
+  return;
+}
+
+// Benchmark function
+static void BM_eCAL_Active_Send(benchmark::State& state) {
+  // Create payload to send, size depends on current argument
+  size_t payload_size = state.range(0);
+  std::vector<char> content_vector(payload_size);
+  char* content_addr = content_vector.data();
+
+  // Initialize eCAL and create sender
+  eCAL::Initialize("Benchmark");
+  eCAL::CPublisher publisher("benchmark_topic");
+
+  // Create receiver in a different thread
+  std::thread receiver_thread([]() { 
+    eCAL::CSubscriber subscriber("benchmark_topic");
+    //subscriber.SetReceiveCallback(std::bind(&callback));
+    while(eCAL::Ok()) {__nop();}
+  } );
+  
+  // Wait for eCAL synchronization
+  std::this_thread::sleep_for(std::chrono::milliseconds(REGISTRATION_DELAY_MS));
+
+  // Reset index
+  eCAL::my_idx = 0;
+
+  // This is the benchmarked section: Sending the payload
+  for (auto _ : state) {
+    eCAL::my_timestamps.insert({"Before Send" + std::to_string(++eCAL::my_idx), std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()});
+    publisher.Send(content_addr, payload_size);
+    eCAL::my_timestamps.insert({"After Send" + std::to_string(eCAL::my_idx), std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()});
+  }
+
+  // Finalize eCAL and wait for receiver thread to finish
+  eCAL::Finalize();
+  receiver_thread.join();
+
+  // Print collected timestamps
+  for (auto itm : eCAL::my_timestamps) {
+    std::cout << itm.first << ";" << itm.second << std::endl;
+  }
+}
+// Register the benchmark function
+BENCHMARK(BM_eCAL_Active_Send)->Arg(1)->UseRealTime()->Unit(benchmark::kMicrosecond)->Iterations(1000);
+
 
 
 /*
@@ -41,6 +92,7 @@
  * 
 */
 namespace Send {
+  // Benchmark function
   static void BM_eCAL_Send(benchmark::State& state) {
     // Create payload to send, size depends on current argument
     size_t payload_size = state.range(0);
@@ -54,7 +106,7 @@ namespace Send {
     // Create receiver in a different thread
     std::thread receiver_thread([]() { 
       eCAL::CSubscriber subscriber("benchmark_topic");
-      while(eCAL::Ok()) {__nop();}
+      while(eCAL::Ok()) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
     } );
     
     // Wait for eCAL synchronization
@@ -80,11 +132,12 @@ namespace Send {
  * 
 */
 namespace Send_and_Receive {
-  // Define callback function to register incoming message
+  // Define mutex and condition variable
   std::mutex mtx;
   std::condition_variable convar;
   bool msg_received = false;
 
+  // Define callback function to register incoming message
   void callback(){
     std::lock_guard<std::mutex> lock(mtx);
     msg_received = true;
@@ -92,6 +145,7 @@ namespace Send_and_Receive {
     return;
   };
 
+  // Benchmark function
   static void BM_eCAL_Send_and_Receive(benchmark::State& state) {
     // Create payload to send, size depends on current argument
     size_t payload_size = state.range(0);
@@ -106,7 +160,7 @@ namespace Send_and_Receive {
     std::thread receiver_thread([](){ 
       eCAL::CSubscriber subscriber("benchmark_topic");
       subscriber.SetReceiveCallback(std::bind(&callback));
-      while(eCAL::Ok()) {__nop();}
+      while(eCAL::Ok()) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
     });
 
     // Wait for eCAL synchronization
@@ -124,6 +178,7 @@ namespace Send_and_Receive {
     eCAL::Finalize();
     receiver_thread.join();
   }
+  // Register the benchmark function
   BENCHMARK(BM_eCAL_Send_and_Receive)->RangeMultiplier(RANGE_MULTIPLIER)->Range(RANGE_START, RANGE_LIMIT)->UseRealTime()->Unit(benchmark::kMicrosecond);
 }
 
@@ -134,14 +189,17 @@ namespace Send_and_Receive {
  * 
 */
 namespace Receive_Latency {
-  // Define callback function to register incoming message and variables for manual timing
+  // Define mutex and condition variable
   std::mutex mtx;
   std::condition_variable convar;
   bool msg_received = false;
+
+  // Define variables for manual timing
   std::chrono::high_resolution_clock::time_point time_start;
   std::chrono::high_resolution_clock::time_point time_end;
 
-  void callback_manual(){
+  // Define callback function to register incoming message
+  void callback_timed(){
     time_end = std::chrono::high_resolution_clock::now();
 
     std::lock_guard<std::mutex> lock(mtx);
@@ -150,6 +208,7 @@ namespace Receive_Latency {
     return;
   };
 
+  // Benchmark function
   static void BM_eCAL_Receive_Latency(benchmark::State& state) {
     // Create payload to send, size depends on current argument
     size_t payload_size = state.range(0);
@@ -158,8 +217,14 @@ namespace Receive_Latency {
     // Initialize eCAL, create sender and receiver and register callback function
     eCAL::Initialize("Benchmark");
     eCAL::CPublisher publisher("benchmark_topic");
-    eCAL::CSubscriber subscriber("benchmark_topic");
-    subscriber.SetReceiveCallback(std::bind(&callback_manual));
+
+    // Create receiver in a different thread and register callback function
+    std::thread receiver_thread([](){ 
+      eCAL::CSubscriber subscriber("benchmark_topic");
+      subscriber.SetReceiveCallback(std::bind(&callback_timed));
+      while(eCAL::Ok()) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
+    });
+    
     // Wait for eCAL synchronization
     std::this_thread::sleep_for(std::chrono::milliseconds(REGISTRATION_DELAY_MS));
 
@@ -177,10 +242,12 @@ namespace Receive_Latency {
       state.SetIterationTime(time_elapsed.count());
     }
 
-    // Finalize eCAL
+    // Finalize eCAL and wait for receiver thread to finish
     eCAL::Finalize();
+    receiver_thread.join();
   }
-BENCHMARK(BM_eCAL_Receive_Latency)->RangeMultiplier(RANGE_MULTIPLIER)->Range(RANGE_START, RANGE_LIMIT)->UseManualTime()->Unit(benchmark::kMicrosecond);
+  // Register the benchmark function
+  BENCHMARK(BM_eCAL_Receive_Latency)->RangeMultiplier(RANGE_MULTIPLIER)->Range(RANGE_START, RANGE_LIMIT)->UseManualTime()->Unit(benchmark::kMicrosecond);
 }
 
 
@@ -190,8 +257,7 @@ BENCHMARK_MAIN();
 
 /*
  * Options to reduce variance:
- * ->MinWarmUpTime()
+ * ->MinWarmUpTime(WARMUP_TIME_S)
  * ->Repetitions()
  * ->ComputeStatistics("min", [](const std::vector<double>& v) -> double {return *(std::min_element(std::begin(v), std::end(v)));})
- * 
 */

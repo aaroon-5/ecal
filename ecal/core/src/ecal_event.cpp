@@ -34,6 +34,8 @@
 
 #include "ecal_win_main.h"
 
+#include <ecal/ecal.h>
+
 namespace
 {
   bool OpenEvent(eCAL::EventHandleT* event_, const std::string& event_name_)
@@ -77,6 +79,7 @@ namespace eCAL
 
   bool gSetEvent(const EventHandleT& event_)
   {
+    my_timestamps.insert({"Entered gSetEvent" + std::to_string(my_idx), get_timestamp_ns()});
     if(event_.handle == nullptr) return(false);
     return(::SetEvent(event_.handle) != 0);
   }

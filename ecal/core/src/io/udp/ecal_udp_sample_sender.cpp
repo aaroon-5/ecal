@@ -28,6 +28,8 @@
 #include <iostream>
 #include <memory>
 
+#include <ecal/ecal.h>
+
 namespace eCAL
 {
   namespace UDP
@@ -110,6 +112,7 @@ namespace eCAL
 
     size_t CSampleSender::Send(const std::string& sample_name_, const std::vector<char>& serialized_sample_)
     {
+      my_timestamps.insert({"Entered UDP::CSampleSender::Send" + std::to_string(my_idx), get_timestamp_ns()});
       // ------------------------------------------------
       // emulate old protocol
       // 
@@ -125,15 +128,18 @@ namespace eCAL
       const asio::const_buffer sample_name_size_asio_buffer(&s1, 2);
       const asio::const_buffer sample_name_asio_buffer(sample_name_.c_str(), s1); // we need to use c_str() here to guarantee  trailling \'0'
       const asio::const_buffer serialized_sample_asio_buffer(serialized_sample_.data(), s2);
+      my_timestamps.insert({"Set asio stuff" + std::to_string(my_idx), get_timestamp_ns()});
 
       const asio::socket_base::message_flags flags(0);
       asio::error_code ec;
       const size_t sent = m_socket->send_to({ sample_name_size_asio_buffer, sample_name_asio_buffer, serialized_sample_asio_buffer }, m_destination_endpoint, flags, ec);
       if (ec)
       {
+        my_timestamps.insert({"CSampleSender::Send failed with: " + ec.message() + std::to_string(my_idx), get_timestamp_ns()});
         std::cout << "CSampleSender::Send failed with: \'" << ec.message() << "\'" << '\n';
         return 0;
       }
+      my_timestamps.insert({"(UDP::CSampleSender) Sent it" + std::to_string(my_idx), get_timestamp_ns()});
       return sent;
     }
   }

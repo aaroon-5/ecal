@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ecal/os.h"
 
 #include <map>

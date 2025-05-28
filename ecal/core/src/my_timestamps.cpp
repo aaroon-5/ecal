@@ -28,4 +28,5 @@ namespace eCAL {
   long long My_timestamps::get_time_ns(void) {
     return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
   }
+  
 }

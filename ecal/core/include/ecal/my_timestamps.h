@@ -25,11 +25,14 @@ namespace eCAL {
 
       private:
          // Map to collect timestamps
-         static std::map<std::string, long long> m_timestamps;
+         ECAL_API_EXPORTED_MEMBER
+            static std::map<std::string, long long> m_timestamps;
          // Index to count iterations
-         static int m_idx;
+         ECAL_API_EXPORTED_MEMBER
+            static int m_idx;
 
          // Get the time in nanoseconds
-         static long long get_time_ns(void);
+         ECAL_API_EXPORTED_MEMBER
+            static long long get_time_ns(void);
    };
 }

@@ -21,6 +21,7 @@
 #include <ecal/pubsub/publisher.h>
 #include <ecal/pubsub/subscriber.h>
 #include <benchmark/benchmark.h>
+#include <ecal/my_timestamps.h>
 
 #include <iostream>
 #include <thread>
@@ -53,36 +54,38 @@ static void BM_eCAL_Active_Send(benchmark::State& state) {
   eCAL::CPublisher publisher("benchmark_topic");
 
   // Create receiver in a different thread
-  std::thread receiver_thread([]() { 
+  std::thread receiver_thread([&]() { 
     eCAL::CSubscriber subscriber("benchmark_topic");
-    //subscriber.SetReceiveCallback(std::bind(&callback));
+    // Register a callback function if 1 is passed as an argument to the benchmark
+    if (state.range(0) == 1) {
+      subscriber.SetReceiveCallback(std::bind(&callback));
+    }
     while(eCAL::Ok()) { std::this_thread::sleep_for(std::chrono::milliseconds(10)); }
   } );
   
   // Wait for eCAL synchronization
   std::this_thread::sleep_for(std::chrono::milliseconds(REGISTRATION_DELAY_MS));
 
-  // Reset index
-  eCAL::my_idx = 0;
+  // Reset timestamp index
+  eCAL::My_timestamps::reset_index();
 
   // This is the benchmarked section: Sending the payload
   for (auto _ : state) {
-    eCAL::my_timestamps.insert({"Before Send" + std::to_string(++eCAL::my_idx), std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()});
+    eCAL::My_timestamps::increase_index();
+    eCAL::My_timestamps::make_timestamp("Before Send");
     publisher.Send(content_addr, payload_size);
-    eCAL::my_timestamps.insert({"After Send" + std::to_string(eCAL::my_idx), std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now().time_since_epoch()).count()});
+    eCAL::My_timestamps::make_timestamp("After Send");
   }
 
   // Finalize eCAL and wait for receiver thread to finish
   eCAL::Finalize();
   receiver_thread.join();
 
-  // Print collected timestamps
-  for (auto itm : eCAL::my_timestamps) {
-    std::cout << itm.first << ";" << itm.second << std::endl;
-  }
+  // Print timestamps
+  eCAL::My_timestamps::print_timestamps();
 }
 // Register the benchmark function
-BENCHMARK(BM_eCAL_Active_Send)->Arg(1)->UseRealTime()->Unit(benchmark::kMicrosecond)->Iterations(1000);
+BENCHMARK(BM_eCAL_Active_Send)->Arg(0)->Arg(1)->UseRealTime()->Unit(benchmark::kMicrosecond)->Iterations(1000);
 
 
 

@@ -33,7 +33,7 @@
 #include <cstring>
 #include <random>
 
-#include <ecal/ecal.h>
+#include "ecal/my_timestamps.h"
 
 #define SIZEOF_PARTIAL_STRUCT(_STRUCT_NAME_, _FIELD_NAME_) (reinterpret_cast<std::size_t>(&(reinterpret_cast<_STRUCT_NAME_*>(0)->_FIELD_NAME_)) + sizeof(_STRUCT_NAME_::_FIELD_NAME_)) //NOLINT
 
@@ -319,7 +319,7 @@ namespace eCAL
 
   size_t CMemoryFile::WritePayload(CPayloadWriter& payload_, const size_t len_, const size_t offset_, bool force_full_write_ /*= false*/)
   {
-    my_timestamps.insert({"Entered CMemoryFile::WritePayload" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Entered CMemoryFile::WritePayload");
     if (!m_created) return(0);
 
     void* wbuf(nullptr);
@@ -329,7 +329,7 @@ namespace eCAL
       if (!m_payload_initialized || force_full_write_)
       {
         bool const success = payload_.WriteFull(static_cast<char *>(wbuf) + offset_, len_);
-        my_timestamps.insert({"(Re)written complete buffer" + std::to_string(my_idx), get_timestamp_ns()});
+        My_timestamps::make_timestamp("(Re)written complete buffer");
         if (!success)
         {
           printf("Could not write payload content to the memory file (CPayload::WriteFull returned false): %s.\n\n", m_name.c_str());
@@ -343,7 +343,7 @@ namespace eCAL
       {
         // apply update to write buffer
         bool const success = payload_.WriteModified(static_cast<char *>(wbuf) + offset_, len_);
-        my_timestamps.insert({"Applied update to write buffer" + std::to_string(my_idx), get_timestamp_ns()});
+        My_timestamps::make_timestamp("Applied update to write buffer");
         if (!success)
         {
           printf("Could not write payload content to the memory file (CPayload::WriteModified returned false): %s.\n\n", m_name.c_str());

@@ -480,6 +480,7 @@ set(ecal_cmn_src
     src/ecal_process.cpp
     src/ecal_util.cpp
     src/ecal_win_main.h
+	src/my_timestamps.cpp
 )
 if (WIN32)
   list(APPEND ecal_cmn_src
@@ -588,6 +589,7 @@ set(ecal_header_cmn
     include/ecal/timer.h
     include/ecal/types.h
     include/ecal/util.h
+	include/ecal/my_timestamps.h
 )
 
 set(ecal_sources

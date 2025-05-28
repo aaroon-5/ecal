@@ -36,15 +36,10 @@
 #include <string>
 #include <utility>
 
+#include "ecal/my_timestamps.h"
+
 namespace eCAL
 {
-  std::map<std::string, long long> my_timestamps;
-  int my_idx;
-
-  long long get_timestamp_ns(void) {
-    return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
-  }
-
   CPublisher::CPublisher(const std::string& topic_name_, const SDataTypeInformation& data_type_info_, const Publisher::Configuration& config_)
   {
     auto config = eCAL::GetConfiguration();
@@ -89,14 +84,14 @@ namespace eCAL
 
   bool CPublisher::Send(const void* const buf_, const size_t len_, const long long time_ /* = DEFAULT_TIME_ARGUMENT */)
   {
-    my_timestamps.insert({"Entered Send(buf,len,time)" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Entered Send(buf,len,time)");
     CBufferPayloadWriter payload{ buf_, len_ };
     return Send(payload, time_);
   }
 
   bool CPublisher::Send(CPayloadWriter& payload_, long long time_)
   {
-    my_timestamps.insert({"Entered Send(payload,time)" + std::to_string(my_idx), get_timestamp_ns()});
+   My_timestamps::make_timestamp("Entered Send(payload,time)");
     if (m_publisher_impl == nullptr) return false;
     // in an optimization case the
      // publisher can send an empty package

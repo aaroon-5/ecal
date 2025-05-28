@@ -34,7 +34,7 @@
 #include <string>
 #include <utility>
 
-#include <ecal/ecal.h>
+#include "ecal/my_timestamps.h"
 
 namespace eCAL
 {
@@ -150,7 +150,7 @@ namespace eCAL
 
   bool CSyncMemoryFile::Write(CPayloadWriter& payload_, const SWriterAttr& data_, bool force_full_write_/* = false*/)
   {
-    my_timestamps.insert({"Entered CSyncMemoryFile::Write" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Entered CSyncMemoryFile::Write");
     if (!m_created)
     {
       Logging::Log(Logging::log_level_error, m_base_name + "::CSyncMemoryFile::Write - FAILED (m_created == false)");
@@ -182,11 +182,11 @@ namespace eCAL
     memfile_hdr.options.zero_copy = static_cast<unsigned char>(data_.zero_copy);
     // set acknowledge timeout
     memfile_hdr.ack_timout_ms     = static_cast<int64_t>(data_.acknowledge_timeout_ms);
-    my_timestamps.insert({"Created SMemFileHeader" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Created SMemFileHeader");
 
     // acquire write access
     bool write_access = m_memfile.GetWriteAccess(static_cast<int>(m_attr.timeout_open_ms));
-    my_timestamps.insert({"Acquired Write Access" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Acquired Write Access");
 
     // maybe it's locked by a zombie or a crashed process
     // so we try to recreate a new one
@@ -196,7 +196,7 @@ namespace eCAL
       Logging::Log(Logging::log_level_debug2, m_base_name + "::CSyncMemoryFile::Write::GetWriteAccess - FAILED");
 #endif
 
-      my_timestamps.insert({"Recreating Memory File" + std::to_string(my_idx), get_timestamp_ns()});
+      My_timestamps::make_timestamp("Recreating Memory File");
       // try to recreate the memory file
       if (!Recreate(m_memfile.MaxDataSize())) return false;
 
@@ -224,7 +224,7 @@ namespace eCAL
     }
     // release write access
     m_memfile.ReleaseWriteAccess();
-    my_timestamps.insert({"Released Write Access" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Released Write Access");
 
     // and fire the publish event for local subscriber
     if (written) SyncContent();
@@ -348,7 +348,7 @@ namespace eCAL
 
   void CSyncMemoryFile::SyncContent()
   {
-    my_timestamps.insert({"Entered CSyncMemoryFile::SyncContent" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Entered CSyncMemoryFile::SyncContent");
     if (!m_created) return;
 
     // fire the publisher events
@@ -366,7 +366,7 @@ namespace eCAL
     // "eat" old acknowledge events :)
     if (m_attr.timeout_ack_ms != 0)
     {
-      my_timestamps.insert({"Entered 'eat' old acknowledge events" + std::to_string(my_idx), get_timestamp_ns()});
+      My_timestamps::make_timestamp("Entered 'eat' old acknowledge events");
       for (const auto& event_handle : event_handle_map_snapshot)
       {
         while (gWaitForEvent(event_handle.second.event_ack, 0)) {}
@@ -378,13 +378,13 @@ namespace eCAL
     {
       // send sync event
       gSetEvent(event_handle.second.event_snd);
-      my_timestamps.insert({"Sent sync event" + std::to_string(my_idx), get_timestamp_ns()});
+      My_timestamps::make_timestamp("Sent sync event");
     }
 
     // wait for acknowledgment event from receiver side
     if (m_attr.timeout_ack_ms != 0)
     {
-      my_timestamps.insert({"Entered wait for acknowledgement event from receiver side" + std::to_string(my_idx), get_timestamp_ns()});
+      My_timestamps::make_timestamp("Entered wait for acknowledgement event from receiver side");
       // take start time for all acknowledge timeouts
       const auto start_time = std::chrono::steady_clock::now();
 
@@ -394,11 +394,11 @@ namespace eCAL
         const auto time_to_wait     = std::chrono::milliseconds(m_attr.timeout_ack_ms)- time_since_start;
         long       time_to_wait_ms  = static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(time_to_wait).count());
         if (time_to_wait_ms <= 0) time_to_wait_ms = 0;
-        my_timestamps.insert({"Time to wait is " + std::to_string(time_to_wait_ms)+ std::to_string(my_idx), get_timestamp_ns()});
+        My_timestamps::make_timestamp("Time to wait is " + std::to_string(time_to_wait_ms));
 
         if (event_handle.second.event_ack_is_invalid)
         {
-          my_timestamps.insert({"Event ACK is invalid" + std::to_string(my_idx), get_timestamp_ns()});
+          My_timestamps::make_timestamp("Event ACK is invalid");
           // The ack event has timeouted before. Thus, we don't wait for it
           // anymore, until the subscriber notifies us via registration layer
           // that it is still alive.
@@ -407,7 +407,7 @@ namespace eCAL
 
         if (!gWaitForEvent(event_handle.second.event_ack, time_to_wait_ms))
         {
-          my_timestamps.insert({"Event has timeouted" + std::to_string(my_idx), get_timestamp_ns()});
+          My_timestamps::make_timestamp("Event has timeouted");
           // Remember that this event has timeouted. This will not cause the
           // publisher to wait for it anymore, until the subscriber actively
           // requests that via registration layer again.

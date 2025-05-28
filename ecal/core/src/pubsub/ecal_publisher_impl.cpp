@@ -51,7 +51,7 @@
 #include <string>
 #include <utility>
 
-#include <ecal/ecal.h>
+#include <ecal/my_timestamps.h>
 
 struct SSndHash
 {
@@ -157,7 +157,7 @@ namespace eCAL
 
   bool CPublisherImpl::Write(CPayloadWriter& payload_, long long time_, long long filter_id_)
   {
-    my_timestamps.insert({"Entered CPublisherImpl::Write" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Entered CPublisherImpl::Write");
     // get payload buffer size (one time, to avoid multiple computations)
     const size_t payload_buf_size(payload_.GetSize());
 
@@ -179,14 +179,14 @@ namespace eCAL
     if (!allow_zero_copy)
     {
       m_payload_buffer.resize(payload_buf_size);
-      my_timestamps.insert({"Executed m_payload_buffer.resize" + std::to_string(my_idx), get_timestamp_ns()});
+      My_timestamps::make_timestamp("Executed m_payload_buffer.resize");
       payload_.WriteFull(m_payload_buffer.data(), m_payload_buffer.size());
-      my_timestamps.insert({"Executed payload_.WriteFull" + std::to_string(my_idx), get_timestamp_ns()});
+      My_timestamps::make_timestamp("Executed payload_.WriteFull");
     }
 
     // prepare counter and internal states
     const size_t snd_hash = PrepareWrite(filter_id_, payload_buf_size);
-    my_timestamps.insert({"Executed PrepareWrite" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Executed PrepareWrite");
 
     // did we write anything
     bool written(false);
@@ -204,7 +204,7 @@ namespace eCAL
       // send it
       bool shm_sent(false);
       {
-        my_timestamps.insert({"Entered shm send it" + std::to_string(my_idx), get_timestamp_ns()});
+        My_timestamps::make_timestamp("Entered shm send it");
         // fill writer data
         struct SWriterAttr wattr;
         wattr.len = payload_buf_size;
@@ -214,12 +214,12 @@ namespace eCAL
         wattr.time = time_;
         wattr.zero_copy = m_attributes.shm.zero_copy_mode;
         wattr.acknowledge_timeout_ms = m_attributes.shm.acknowledge_timeout_ms;
-        my_timestamps.insert({"Created SWriterAttr" + std::to_string(my_idx), get_timestamp_ns()});
+        My_timestamps::make_timestamp("Created SWriterAttr");
 
         // prepare send
         if (m_writer_shm->PrepareWrite(wattr))
         {
-          my_timestamps.insert({"Register new to update listening subscribers and rematch" + std::to_string(my_idx), get_timestamp_ns()});
+          My_timestamps::make_timestamp("Register new to update listening subscribers and rematch");
           // register new to update listening subscribers and rematch
           Register();
           Process::SleepMS(5);
@@ -270,7 +270,7 @@ namespace eCAL
       // send it
       bool udp_sent(false);
       {
-        my_timestamps.insert({"Entered udp send it" + std::to_string(my_idx), get_timestamp_ns()});
+        My_timestamps::make_timestamp("Entered udp send it");
         // fill writer data
         struct SWriterAttr wattr;
         wattr.len = payload_buf_size;
@@ -279,12 +279,12 @@ namespace eCAL
         wattr.hash = snd_hash;
         wattr.time = time_;
         wattr.loopback = m_attributes.loopback;
-        my_timestamps.insert({"Created SWriterAttr" + std::to_string(my_idx), get_timestamp_ns()});
+        My_timestamps::make_timestamp("Created SWriterAttr");
 
         // prepare send
         if (m_writer_udp->PrepareWrite(wattr))
         {
-          my_timestamps.insert({"Register new to update listening subscribers and rematch" + std::to_string(my_idx), get_timestamp_ns()});
+          My_timestamps::make_timestamp("Register new to update listening subscribers and rematch");
           // register new to update listening subscribers and rematch
           Register();
           Process::SleepMS(5);

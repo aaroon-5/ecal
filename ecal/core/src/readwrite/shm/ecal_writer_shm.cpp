@@ -28,7 +28,7 @@
 
 #include <string>
 
-#include <ecal/ecal.h>
+#include "ecal/my_timestamps.h"
 
 namespace eCAL
 {
@@ -74,11 +74,11 @@ namespace eCAL
 
   bool CDataWriterSHM::Write(CPayloadWriter& payload_, const SWriterAttr& attr_)
   {
-    my_timestamps.insert({"Entered CDataWriterSHM" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Entered CDataWriterSHM");
     // write content
     const bool force_full_write(m_memory_file_vec.size() > 1);
     const bool sent = m_memory_file_vec[m_write_idx]->Write(payload_, attr_, force_full_write);
-    my_timestamps.insert({"Written content" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Written content");
 
     // and increment file index
     m_write_idx++;

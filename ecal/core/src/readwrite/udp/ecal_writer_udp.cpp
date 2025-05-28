@@ -31,7 +31,7 @@
 
 #include <cstddef>
 
-#include <ecal/ecal.h>
+#include "ecal/my_timestamps.h"
 
 namespace eCAL
 {
@@ -64,18 +64,18 @@ namespace eCAL
 
   bool CDataWriterUdpMC::Write(const void* const buf_, const SWriterAttr& attr_)
   {
-    my_timestamps.insert({"Entered CDataWriterUdpMC" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Entered CDataWriterUdpMC");
     // create new sample
     Payload::Sample ecal_sample;
     ecal_sample.cmd_type = eCmdType::bct_set_sample;
-    my_timestamps.insert({"Created new sample" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Created new sample");
 
     // fill sample info
     auto& ecal_sample_topic_info = ecal_sample.topic_info;
     ecal_sample_topic_info.host_name  = m_attributes.host_name;
     ecal_sample_topic_info.topic_name = m_attributes.topic_name;
     ecal_sample_topic_info.topic_id   = m_attributes.topic_id;
-    my_timestamps.insert({"Filled sample info" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Filled sample info");
 
     // append content
     auto& ecal_sample_content = ecal_sample.content;
@@ -86,7 +86,7 @@ namespace eCAL
     ecal_sample_content.payload.type     = Payload::pl_raw;
     ecal_sample_content.payload.raw_addr = static_cast<const char*>(buf_);
     ecal_sample_content.payload.raw_size = attr_.len;
-    my_timestamps.insert({"Appended content" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Appended content");
 
     // send it
     size_t sent = 0;

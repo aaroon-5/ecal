@@ -34,7 +34,7 @@
 
 #include "ecal_win_main.h"
 
-#include <ecal/ecal.h>
+#include "ecal/my_timestamps.h"
 
 namespace
 {
@@ -79,7 +79,7 @@ namespace eCAL
 
   bool gSetEvent(const EventHandleT& event_)
   {
-    my_timestamps.insert({"Entered gSetEvent" + std::to_string(my_idx), get_timestamp_ns()});
+    My_timestamps::make_timestamp("Entered gSetEvent");
     if(event_.handle == nullptr) return(false);
     return(::SetEvent(event_.handle) != 0);
   }

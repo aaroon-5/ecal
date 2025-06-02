@@ -10,13 +10,7 @@ jobs:
     steps:
     - uses: bencherdev/bencher@main
     
-    - name: Upload location candidate
-      uses: actions/upload-artifact@v4
-      with:
-        name: dir
-        path: C:\hostedtoolcache\windows\bencher\0.5.1\x64\*
-    
     - name: Run Bencher
       shell: cmd
       run: |
-        C:\hostedtoolcache\windows\bencher\0.5.1\x64\bencher.exe run "bencher mock"
+        C:\hostedtoolcache\windows\bencher\0.5.1\x64\bencher run "bencher mock"

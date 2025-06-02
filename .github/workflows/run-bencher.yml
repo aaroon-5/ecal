@@ -11,6 +11,8 @@ jobs:
     - uses: bencherdev/bencher@main
     
     - name: Run Bencher
-      shell: cmd
+      shell: pwsh
       run: |
-        C:\hostedtoolcache\windows\bencher\0.5.1\x64\bencher run "bencher mock"
+        bencher run "bencher mock"
+        
+#C:\hostedtoolcache\windows\bencher\0.5.1\x64\

@@ -10,15 +10,7 @@ jobs:
     steps:
     - uses: bencherdev/bencher@main
     
-    
-    - name: Debug PATH and Bencher location
-      shell: pwsh
-      run: |
-        Write-Host "PATH: $env:PATH"
-        Get-ChildItem -Recurse -Filter bencher.exe -Path $env:USERPROFILE, $env:ProgramFiles, $env:ProgramData, $env:RUNNER_TEMP | ForEach-Object { $_.FullName }
-
-    
     - name: Run Bencher
       shell: cmd
       run: |
-        bencher run "bencher mock"
+        C:\hostedtoolcache\windows\bencher\0.5.1\x64\bencher.exe run "bencher mock"

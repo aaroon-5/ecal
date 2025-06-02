@@ -10,9 +10,9 @@ jobs:
     steps:
     - uses: bencherdev/bencher@main
     
-    -name: Upload location candidate
-     uses: actions/upload-artifact@v4
-     with:
+    - name: Upload location candidate
+      uses: actions/upload-artifact@v4
+      with:
         name: dir
         path: C:\hostedtoolcache\windows\bencher\0.5.1\x64\*
     

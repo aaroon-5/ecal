@@ -1,0 +1,15 @@
+name: Run Bencher
+
+on:
+  push:
+
+jobs:
+  run-bencher:
+    runs-on: windows-2019
+
+    steps:
+    - uses: bencherdev/bencher@main
+    - name: Run Bencher
+      shell: cmd
+      run: |
+        bencher run "bencher mock"

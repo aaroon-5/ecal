@@ -5,14 +5,13 @@ on:
 
 jobs:
   run-bencher:
-    runs-on: windows-2019
+    runs-on: ubuntu-latest
 
     steps:
     - uses: bencherdev/bencher@main
     
     - name: Run Bencher
-      shell: pwsh
       run: |
-        bencher run --project mock "bencher mock"
+        bencher run "bencher mock"
         
 #C:\hostedtoolcache\windows\bencher\0.5.1\x64\

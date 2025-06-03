@@ -240,6 +240,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/namespace_eCAL__Registration.html">Namespace eCAL::Registration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/namespace_eCAL__Time.html">Namespace eCAL::Time</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/namespace_eCAL__Util.html">Namespace eCAL::Util</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/namespace_std.html">Namespace std</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/structeCAL_1_1Registration_1_1SServiceMethod.html">Struct SServiceMethod</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/structeCAL_1_1SDataTypeInformation.html">Struct SDataTypeInformation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/structeCAL_1_1SEntityId.html">Struct SEntityId</a></li>
@@ -249,6 +250,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/classeCAL_1_1eh5_1_1v3_1_1HDF5Meas.html">Class HDF5Meas</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/classeCAL_1_1eh5_1_1v2_1_1HDF5Meas.html">Class HDF5Meas</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/classeCAL_1_1eh5_1_1v3_1_1HDF5Meas.html">Class HDF5Meas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/classstd_1_1hash_3_01eCAL_1_1SDataTypeInformation_01_4.html">Template Class hash&lt; eCAL::SDataTypeInformation &gt;</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/enum_log__level_8h_1a26836a3eb06b0d47712353cc3afa320e.html">Enum eLogLevel</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/enum_process__severity_8h_1adfbf566f466697438dd0f26d66c4f1f0.html">Enum eSeverity</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/enum_process__severity_8h_1a917a843b57411c9ab3bbe4a16e517685.html">Enum eSeverityLevel</a></li>
@@ -937,7 +939,7 @@ So we need them as well. The definitions are straight forward. For more informat
 <span class="linenos"> 27</span><span class="cm">      You can vary between different states like healthy, warning, critical ...</span>
 <span class="linenos"> 28</span><span class="cm">      This can be used to communicate the application state to applications like eCAL Monitor/Sys.</span>
 <span class="linenos"> 29</span><span class="cm">    */</span>
-<span class="linenos"> 30</span><span class="w">    </span><span class="c1">// This function is not wrapped yet.</span>
+<span class="linenos"> 30</span><span class="w">    </span><span class="n">Process</span><span class="p">.</span><span class="n">SetState</span><span class="p">(</span><span class="n">eProcessSeverity</span><span class="p">.</span><span class="n">Healthy</span><span class="p">,</span><span class="w"> </span><span class="n">eProcessSeverityLevel</span><span class="p">.</span><span class="n">Level1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;I feel good!&quot;</span><span class="p">);</span>
 <span class="linenos"> 31</span>
 <span class="linenos"> 32</span><span class="w">    </span><span class="cm">/*</span>
 <span class="linenos"> 33</span><span class="cm">      Now we create a new publisher that will publish the topic &quot;person&quot;.</span>
@@ -1220,7 +1222,7 @@ So we need them as well. The definitions are straight forward. For more informat
 <span class="linenos">27</span><span class="cm">      You can vary between different states like healthy, warning, critical ...</span>
 <span class="linenos">28</span><span class="cm">      This can be used to communicate the application state to applications like eCAL Monitor/Sys.</span>
 <span class="linenos">29</span><span class="cm">    */</span>
-<span class="linenos">30</span><span class="w">    </span><span class="c1">// This function is not wrapped yet.</span>
+<span class="linenos">30</span><span class="w">    </span><span class="n">Process</span><span class="p">.</span><span class="n">SetState</span><span class="p">(</span><span class="n">eProcessSeverity</span><span class="p">.</span><span class="n">Healthy</span><span class="p">,</span><span class="w"> </span><span class="n">eProcessSeverityLevel</span><span class="p">.</span><span class="n">Level1</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;I feel good!&quot;</span><span class="p">);</span>
 <span class="linenos">31</span>
 <span class="linenos">32</span><span class="w">    </span><span class="cm">/*</span>
 <span class="linenos">33</span><span class="cm">      Creating the eCAL Subscriber. An eCAL Process can create multiple subscribers (and publishers).</span>

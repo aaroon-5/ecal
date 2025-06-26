@@ -13,4 +13,5 @@ jobs:
     
     - name: Run Bencher
       run: |
-        bencher run "bencher mock"
+        "bencher run "bencher mock""
+      shell: pwsh

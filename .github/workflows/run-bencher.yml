@@ -13,6 +13,5 @@ jobs:
     
     - name: Run Bencher
       run: |
-        bencher --version
+        C:\Windows\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". 'bencher --version'"
         bencher run "bencher mock"
-      shell: powershell

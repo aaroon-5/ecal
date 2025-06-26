@@ -14,6 +14,6 @@ jobs:
     - name: Run Bencher
       shell: pwsh
       run: |
-        curl -sSL https://install.bencher.dev | bash
+        powershell -c "irm https://bencher.dev/download/install-cli.ps1 | iex"
         bencher --version
         bencher run "bencher mock"

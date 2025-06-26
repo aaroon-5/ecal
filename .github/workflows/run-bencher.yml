@@ -12,6 +12,8 @@ jobs:
       uses: bencherdev/bencher@main
     
     - name: Run Bencher
+      shell: pwsh
       run: |
-        C:\Windows\System32\WindowsPowerShell\v1.0\powershell.EXE -command ". 'bencher --version'"
+        curl -sSL https://install.bencher.dev | bash
+        bencher --version
         bencher run "bencher mock"

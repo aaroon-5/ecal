@@ -5,7 +5,7 @@ on:
 
 jobs:
   run-bencher:
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
 
     steps:
     - uses: bencherdev/bencher@main
@@ -13,5 +13,3 @@ jobs:
     - name: Run Bencher
       run: |
         bencher run "bencher mock"
-        
-#C:\hostedtoolcache\windows\bencher\0.5.1\x64\

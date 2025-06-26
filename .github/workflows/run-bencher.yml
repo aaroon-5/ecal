@@ -9,11 +9,12 @@ jobs:
 
     steps:
     - name: Install Bencher CLI
-      uses: bencherdev/bencher@main
+      shell: pwsh
+      run: |
+        powershell -c "irm https://bencher.dev/download/install-cli.ps1 | iex"
     
     - name: Run Bencher
       shell: pwsh
       run: |
-        powershell -c "irm https://bencher.dev/download/install-cli.ps1 | iex"
         bencher --version
         bencher run "bencher mock"

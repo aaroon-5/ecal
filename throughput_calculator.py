@@ -53,6 +53,9 @@ full_results = {}
 
 for itm in benchmarks:
    try:
+      # Only contain if benchmark is the median result, skip all others
+      if not re.search(r'\bmedian\b', itm["name"]):
+         exit(0)
       # Get payload size (in byte) from benchmark name
       payload_size = int(re.search(r'/(\d+)/[a-z]', itm["name"]).group(1))
       # Get background thread count from benchmark name (if applicable)

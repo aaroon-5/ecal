@@ -54,35 +54,34 @@ full_results = {}
 for itm in benchmarks:
    try:
       # Only contain if benchmark is the median result, skip all others
-      if not re.search(r'\bmedian\b', itm["name"]):
-         exit(0)
-      # Get payload size (in byte) from benchmark name
-      payload_size = int(re.search(r'/(\d+)/[a-z]', itm["name"]).group(1))
-      # Get background thread count from benchmark name (if applicable)
-      thread_count = 1
-      multi = re.search(r'[a-z]/(\d+)/[0-9]', itm["name"])
-      if multi:
-         # Adding 1 to account for the main thread
-         thread_count += int(multi.group(1))
-      # Get time taken. Expecting time in nanoseconds
-      real_time_ns = float(itm["real_time"])
-      # Calculating send frequency in hertz (corresponds to throughput in ops/s)
-      frequency = 1 / (real_time_ns * 10**-9) * thread_count
-      # Calculating speed in bytes per second
-      speed = frequency * payload_size * thread_count
-      # Output to console
-      print(f"Payload Size: {payload_size} Bytes  ||  Real Time: {real_time_ns} ns  ||  Frequency: {frequency} ops/s  ||  Datarate: {speed} Bytes/s  ||  Thread count: {thread_count}")
-      # Create new dictionary for this datapoint
-      datapoint = {
-         "throughput" : {
-            "value" : frequency
-         },
-         "speed" : {
-            "value" : speed
+      if re.search(r'\bmedian\b', itm["name"]):
+         # Get payload size (in byte) from benchmark name
+         payload_size = int(re.search(r'/(\d+)/[a-z]', itm["name"]).group(1))
+         # Get background thread count from benchmark name (if applicable)
+         thread_count = 1
+         multi = re.search(r'[a-z]/(\d+)/[0-9]', itm["name"])
+         if multi:
+            # Adding 1 to account for the main thread
+            thread_count += int(multi.group(1))
+         # Get time taken. Expecting time in nanoseconds
+         real_time_ns = float(itm["real_time"])
+         # Calculating send frequency in hertz (corresponds to throughput in ops/s)
+         frequency = 1 / (real_time_ns * 10**-9) * thread_count
+         # Calculating speed in bytes per second
+         speed = frequency * payload_size * thread_count
+         # Output to console
+         print(f"Payload Size: {payload_size} Bytes  ||  Real Time: {real_time_ns} ns  ||  Frequency: {frequency} ops/s  ||  Datarate: {speed} Bytes/s  ||  Thread count: {thread_count}")
+         # Create new dictionary for this datapoint
+         datapoint = {
+            "throughput" : {
+               "value" : frequency
+            },
+            "speed" : {
+               "value" : speed
+            }
          }
-      }
-      # Add dictionary to full results dictionary
-      full_results.update({itm["name"] : datapoint})
+         # Add dictionary to full results dictionary
+         full_results.update({itm["name"] : datapoint})
    except (KeyError, ValueError, AttributeError) as e:
       print(f"WARNING: Skipping invalid benchmark entry: {itm}. Reason: {e}")
 

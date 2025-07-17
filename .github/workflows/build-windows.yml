@@ -308,7 +308,7 @@ jobs:
     
     - name: Run Benchmark
       run: |
-        ${{ github.workspace }}/ecal_benchmark_${{ matrix.bm_type }}.exe --benchmark_out=${{ env.LOG_FILE_NAME }}.json --benchmark_out_format=json
+        ${{ github.workspace }}/ecal_benchmark_${{ matrix.bm_type }}.exe --benchmark_out=${{ env.LOG_FILE_NAME }}.json --benchmark_out_format=json --benchmark_report_aggregates_only=true
       shell: cmd
       
     - name: Upload Benchmark Results
@@ -327,7 +327,7 @@ jobs:
     - name: Log Benchmark Results with Bencher
       run: |
         bencher run `
-        --project ecal `
+        --project ecal-cons `
         --token '${{secrets.BENCHER_API_TOKEN}}' `
         --branch '${{ github.ref_name }}' `
         --testbed '${{ env.OS_VERSION }}' `
@@ -340,7 +340,7 @@ jobs:
       if: ${{ matrix.bm_type == 'pubsub' || matrix.bm_type == 'pubsub_multi' }}
       run: |
         bencher run `
-        --project ecal `
+        --project ecal-cons `
         --token '${{secrets.BENCHER_API_TOKEN}}' `
         --branch '${{ github.ref_name }}' `
         --testbed '${{ env.OS_VERSION }}' `

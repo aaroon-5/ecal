@@ -12,13 +12,28 @@ jobs:
       shell: pwsh
       run: |
         powershell -c "irm https://bencher.dev/download/install-cli.ps1 | iex"
+        
+    - name: Fetch 7z Score Python Script
+      uses: actions/checkout@v4
+      with:
+        sparse-checkout: |
+            7z_score.py
+        sparse-checkout-cone-mode: false
 
     - name: Run 7zip benchmark
-      shell: pwsh
       run: |
-        7z b
+        python 7z_score.py
+      working-directory: ${{ github.workspace }}
+      shell: cmd
     
     - name: Run Bencher
-      shell: pwsh
       run: |
-        bencher run 7z b
+        bencher run `
+        --project ecal `
+        --token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhcGlfa2V5IiwiZXhwIjo2MDQzODE2NjMyLCJpYXQiOjE3NDg4NDkzMzcsImlzcyI6ImJlbmNoZXIuZGV2Iiwic3ViIjoiYWFyb24uaG9lbHNjaGVyQGNvbnRpbmVudGFsLmNvbSIsIm9yZyI6bnVsbH0.7Jn90elBzqcTc4BfX-9_R423EguJImau9aRneMWEEnM
+        --branch '${{ github.ref_name }}' `
+        --testbed '${{ env.OS_VERSION }}' `
+        --github-actions '${{ secrets.GITHUB_TOKEN }}' `
+        --adapter json `
+        --file ${{ github.workspace }}/7z_score.json
+      shell: pwsh

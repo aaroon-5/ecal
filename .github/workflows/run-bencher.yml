@@ -15,9 +15,9 @@ jobs:
         
     - name: Install 7zip
       shell: pwsh
-      run: |
-        Invoke-WebRequest -Uri "https://7-zip.org/a/7zr.exe" -OutFile "$env:TEMP\7zr.exe"
-        Start-Process "$env:TEMP\7zr.exe" -Wait
+      #run: |
+        #Invoke-WebRequest -Uri "https://7-zip.org/a/7zr.exe" -OutFile "$env:TEMP\7zr.exe"
+        #Start-Process "$env:TEMP\7zr.exe" -Wait
 
     - name: Run 7zip benchmark
       shell: pwsh

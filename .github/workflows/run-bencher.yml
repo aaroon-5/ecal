@@ -22,7 +22,6 @@ jobs:
       run: |
         python 7z_score.py
       working-directory: ${{ github.workspace }}
-      shell: cmd
     
     - name: Run Bencher
       run: |
@@ -34,4 +33,3 @@ jobs:
         --github-actions '${{ secrets.GITHUB_TOKEN }}' `
         --adapter json `
         --file ${{ github.workspace }}/7z_score.json
-      shell: pwsh

@@ -32,7 +32,7 @@ jobs:
         --project ecal `
         --token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhcGlfa2V5IiwiZXhwIjo2MDQzODE2NjMyLCJpYXQiOjE3NDg4NDkzMzcsImlzcyI6ImJlbmNoZXIuZGV2Iiwic3ViIjoiYWFyb24uaG9lbHNjaGVyQGNvbnRpbmVudGFsLmNvbSIsIm9yZyI6bnVsbH0.7Jn90elBzqcTc4BfX-9_R423EguJImau9aRneMWEEnM `
         --branch '${{ github.ref_name }}' `
-        --testbed '${{ env.OS_VERSION }}' `
+        --testbed windows-2022 `
         --github-actions '${{ secrets.GITHUB_TOKEN }}' `
         --adapter json `
         --file ${{ github.workspace }}/7z_score.json

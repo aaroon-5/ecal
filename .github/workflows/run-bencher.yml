@@ -12,12 +12,6 @@ jobs:
       shell: pwsh
       run: |
         powershell -c "irm https://bencher.dev/download/install-cli.ps1 | iex"
-        
-    #- name: Install 7zip
-      #shell: pwsh
-      #run: |
-        #Invoke-WebRequest -Uri "https://7-zip.org/a/7zr.exe" -OutFile "$env:TEMP\7zr.exe"
-        #Start-Process "$env:TEMP\7zr.exe" -Wait
 
     - name: Run 7zip benchmark
       shell: pwsh
@@ -27,5 +21,4 @@ jobs:
     - name: Run Bencher
       shell: pwsh
       run: |
-        bencher --version
-        bencher run "bencher mock"
+        bencher run 7z b

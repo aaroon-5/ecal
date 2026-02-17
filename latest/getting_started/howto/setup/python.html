@@ -389,6 +389,7 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/define_namespace_8h_1a3bf2369bd0acf345358aace636fce2c3.html">Define ECAL_CORE_NAMESPACE_V5</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/define_namespace_8h_1a242e58e407887ec1a8e2aaeaf57a9a16.html">Define ECAL_CORE_NAMESPACE_V6</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/define_deprecate_8h_1ad0fce642e420a9f9d32b34cb1814ea2a.html">Define ECAL_DEPRECATE_SINCE_6_0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_api/define_deprecate_8h_1a77bcc00538318df00927e91e00a3806c.html">Define ECAL_DEPRECATE_SINCE_6_1</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/define_eh5__meas_8h_1ae803c5567ff361b9f9ac4c52ddb59869.html">Define ECAL_EH5_DEPRECATE</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/define_eh5__defs_8h_1accb613e2b9b76ded6bf8ca42b2824c5b.html">Define ECAL_HDF5_DATE</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_api/define_eh5__defs_8h_1a5fe10ba3f1fa8832219784c6edc73f0d.html">Define ECAL_HDF5_NAME</a></li>
@@ -493,10 +494,10 @@ document.write(`
 <li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/libcurl.html">libcurl</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/modpath_iss.html">modpath.iss</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/nanobind.html">nanobind</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/nanopb.html">nanopb</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/npcap.html">Npcap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/pcapplusplus.html">PcapPlusPlus</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/protobuf.html">protobuf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/protozero.html">protozero</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/qt.html">Qt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/qwt.html">Qwt</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../license/thirdparty_licenses/recycle.html">recycle</a></li>
@@ -746,7 +747,13 @@ We’d recommend making use of Python virtual environments to then install the e
 </li>
 </ul>
 </li>
-<li><p>Install the eCAL Python integration.</p>
+<li><p>Install the eCAL Python integration (eCAL &gt; 6.0.1)</p>
+<p>Install eCAL from PyPi, e.g. via pip</p>
+<div class="highlight-batch notranslate"><div class="highlight"><pre><span></span>pip install eclipse-ecal
+</pre></div>
+</div>
+</li>
+<li><p>Install the eCAL Python integration (prior to eCAL 6.0.1)</p>
 <p>Choose the appropiate version from the <span class="xref std std-ref">download_archive</span> and download the <code class="file docutils literal notranslate"><span class="pre">.whl</span></code> file.
 Open a command prompt in your download directory and install the Python wheel with:</p>
 <div class="highlight-batch notranslate"><div class="highlight"><pre><span></span>pip install eclipse_ecal-<span class="p">&lt;</span>version<span class="p">&gt;</span>-<span class="p">&lt;</span>python-version<span class="p">&gt;</span>-<span class="p">&lt;</span>architecture<span class="p">&gt;</span>.whl
@@ -756,7 +763,6 @@ Open a command prompt in your download directory and install the Python wheel wi
 We currently upload wheels for Python 3.8 - 3.13.</p>
 </li>
 </ul>
-<p>We will soon upload eCAL packages to PyPi for better integration with pip.</p>
 </section>
 
 
